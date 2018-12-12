@@ -6,7 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -18,16 +21,17 @@ public class ItemAddr extends Popup{
 	private JButton[][] selectorButtons;
 	private int xGrid;
 	private int yGrid;
-	private JTextField valueEntry1;
-	private JTextField valueEntry2;
+	private JTextField valueEntry;
 	private JButton enterButton;
 	private JButton expenseButton;
 	private JButton assetButton;
 	private String curOption;
+	private int assetExpense;
+	private Double output;
 
 	public void setContents() {
-		int xGrid = 4;
-		int yGrid = 2;
+		this.xGrid = 4;
+		this.yGrid = 2;
 		WeightXY(1,1);
 		gbc.fill = GridBagConstraints.BOTH;
 		selectorButtons = new JButton[xGrid][yGrid];
@@ -43,6 +47,7 @@ public class ItemAddr extends Popup{
 		  }
 		}
 		
+		//Text values for the buttons - types of assets/expense, need to be set manually
 		selectorButtons[0][0].setText("Type 1");
 		selectorButtons[1][0].setText("Type 2");
 		selectorButtons[2][0].setText("Type 3");
@@ -52,13 +57,23 @@ public class ItemAddr extends Popup{
 		selectorButtons[2][1].setText("Type 7");
 		selectorButtons[3][1].setText("Type 8");
 		
-		valueEntry1 = new JTextField();
-		setLayout(valueEntry1,0,2,1,1,20);
+		valueEntry = new JTextField();
+		valueEntry.addKeyListener(new KeyListener(){
+			//
+		    public void keyPressed(KeyEvent e){
+		        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+		        	enter();
+		        }
+		    }
+		    public void keyTyped(KeyEvent e) {}
+		    public void keyReleased(KeyEvent e) {}
+		});
+		setLayout(valueEntry,0,2,2,1,20);
 		enterButton = new JButton();
 		enterButton.setText("Enter");
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				enter();
 			}
 		});
 		setLayout(enterButton,2,2,2,1,20);
@@ -66,7 +81,9 @@ public class ItemAddr extends Popup{
 		expenseButton.setText("expense");
 		expenseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				expenseButton.setBackground(Color.green);
+				assetButton.setBackground(null);
+				assetExpense = -1;
 			}
 		});
 		setLayout(expenseButton,0,3,2,1,20);
@@ -74,16 +91,14 @@ public class ItemAddr extends Popup{
 		assetButton.setText("asset");
 		assetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				expenseButton.setBackground(null);
+				assetButton.setBackground(Color.green);
+				assetExpense = 1;
 			}
 		});
 		setLayout(assetButton,2,3,2,1,20);
 		
-//		
-//		System.out.println(this.buttonList.size());
-//		//prepareListeners();
-//		
-		
+	
 	}
 
 	public Dimension objectSize() {
@@ -92,16 +107,29 @@ public class ItemAddr extends Popup{
 
 	
 	private void buttonHandler(ActionEvent e) {
-		for (int i = 0; i < xGrid; i++) {
-			  for (int j = 0; j < yGrid; j++) {
-				  selectorButtons[i][j].setBackground(Color.BLACK);//null
+		for (int i = 0; i < this.xGrid; i++) {
+			  for (int j = 0; j < this.yGrid; j++) {
+				  selectorButtons[i][j].setBackground(null);//null
 			  }
 		}
-		//((JButton) e.getSource()).setBackground(Color.GREEN);
-		
-				
+		((JButton) e.getSource()).setBackground(Color.GREEN);
 		curOption = ((JButton) e.getSource()).getText();
 	}
 	
+	private void enter() {
+		if (curOption != null && assetExpense != 0) {
+			try {
+        		this.output = Double.parseDouble(valueEntry.getText());
+			}
+			catch (NumberFormatException error){
+				valueEntry.setBackground(Color.RED);
+				//todo, add some flashing (alternating color.red and null backround) on delay
+			}
+		}
+		else {
+			enterButton.setBackground(Color.RED);
+			//todo, add some flashing (alternating color.red and null backround) on delay
+		}
+	}
 	
 }
