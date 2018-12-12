@@ -1,6 +1,7 @@
 package budgetPackage;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -26,6 +27,7 @@ public class MainPanel extends Popup{
 		//This lays out the contents of MainPanel, assembling the UI and attaching listeners
 		curLimit = 0;
 		WeightXY(1,1);
+		gbc.fill = GridBagConstraints.BOTH;
 		summeryPanel = new JTextArea();
 		setLayout(summeryPanel,0,0,4,1,20);
 		limitPanel1 = new JTextArea();
@@ -65,6 +67,8 @@ public class MainPanel extends Popup{
 		creationButton.setText("New Item");
 		creationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Popup Adder = new ItemAddr();
+				Adder.declareUnclosing();
 				//This button triggers the creation of a new BugetItem
 			}
 		});

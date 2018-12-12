@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -55,7 +56,8 @@ public abstract class Popup extends JPanel{
 		gbc.gridy = y;
 		gbc.gridwidth = xx;
 		gbc.gridheight = yy;
-		gbc.fill = GridBagConstraints.BOTH;
+		//gbc.insets = new Insets(1,1,1,1);
+		//gbc.fill = GridBagConstraints.BOTH;
 		c.setFont(new Font("Ariel",Font.PLAIN, textsize));
 		this.add(c,gbc);
 	}
