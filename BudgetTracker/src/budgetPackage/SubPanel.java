@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 public class SubPanel extends JPanel{
+
+	private static final long serialVersionUID = 1L;
 	//This panel is to be contained by MainPanel
 	//Allows assembly of graphics without gridBagConstraints
 	BudgetPercept percept;

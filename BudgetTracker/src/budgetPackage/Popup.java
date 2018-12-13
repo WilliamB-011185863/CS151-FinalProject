@@ -6,13 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
 public abstract class Popup extends JPanel{
+	private static final long serialVersionUID = 1L;
 	private JFrame thisFrame;
 	GridBagConstraints gbc;
 	BudgetPercept percept;
@@ -52,12 +51,12 @@ public abstract class Popup extends JPanel{
 	protected void setLayout(Component c, int x, int y, int xx, int yy, int textsize) {
 		//This is used to add a component to the JPanel,
 		//while also declaring relevent gridbagconstraints
+		WeightXY(1,1);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = xx;
 		gbc.gridheight = yy;
-		//gbc.insets = new Insets(1,1,1,1);
-		//gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = GridBagConstraints.BOTH;
 		c.setFont(new Font("Ariel",Font.PLAIN, textsize));
 		this.add(c,gbc);
 	}

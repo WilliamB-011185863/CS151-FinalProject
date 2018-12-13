@@ -9,7 +9,8 @@ import javax.swing.JFrame;
 
 public class PopupFrame extends JFrame{
 
-	
+	private static final long serialVersionUID = 1L;
+
 	public PopupFrame(Dimension d, Popup P) {
 		this.setPreferredSize(d);
 		this.add(P);

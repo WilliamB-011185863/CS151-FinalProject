@@ -32,7 +32,6 @@ public class ItemAddr extends Popup{
 	public void setContents() {
 		this.xGrid = 4;
 		this.yGrid = 2;
-		WeightXY(1,1);
 		gbc.fill = GridBagConstraints.BOTH;
 		selectorButtons = new JButton[xGrid][yGrid];
 		for (int i = 0; i < xGrid; i++) {
@@ -120,6 +119,8 @@ public class ItemAddr extends Popup{
 		if (curOption != null && assetExpense != 0) {
 			try {
         		this.output = Double.parseDouble(valueEntry.getText());
+        		percept.itemAdding(output, curOption, assetExpense);
+        		closeThisFrame();
 			}
 			catch (NumberFormatException error){
 				valueEntry.setBackground(Color.RED);

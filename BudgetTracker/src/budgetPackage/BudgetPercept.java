@@ -39,4 +39,9 @@ public class BudgetPercept {
 		return aBudget.BudgetList;
 	}
 	
+	public void itemAdding(double amount, String type, int posNeg) {
+		aBudget.newItem(type, amount, posNeg);
+		//toDo: refresh subpanel
+	}
+	
 }

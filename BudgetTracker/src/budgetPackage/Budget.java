@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Budget {
 	String customerName;
 	ArrayList<BudgetItem> BudgetList;
+	ArrayList<String> rawData;
 	BudgetFileInterface fInterface;
 	boolean fileExists;
 	Double budgetLimit;
@@ -38,8 +39,8 @@ public class Budget {
 		cleanUp();
 	}
 	
-	public void newItem(String setName, Double setValue) {
-		BudgetList.add(new BudgetItem(setName, setValue));
+	public void newItem(String setName, Double setValue, int posNeg) {
+		this.BudgetList.add(new BudgetItem(setName, setValue, posNeg));
 	}
 	
 	public int getListSize() {
