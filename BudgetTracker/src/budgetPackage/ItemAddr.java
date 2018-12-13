@@ -77,7 +77,7 @@ public class ItemAddr extends Popup{
 		});
 		setLayout(enterButton,2,2,2,1,20);
 		expenseButton = new JButton();
-		expenseButton.setText("expense");
+		expenseButton.setText("Expense");
 		expenseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				expenseButton.setBackground(Color.green);
@@ -87,7 +87,7 @@ public class ItemAddr extends Popup{
 		});
 		setLayout(expenseButton,0,3,2,1,20);
 		assetButton = new JButton();
-		assetButton.setText("asset");
+		assetButton.setText("Revenue");
 		assetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				expenseButton.setBackground(null);

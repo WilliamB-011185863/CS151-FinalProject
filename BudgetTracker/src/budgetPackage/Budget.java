@@ -18,10 +18,10 @@ public class Budget {
 		//this.fileExists = false; //fInterface.CheckFile(nameInput);
 		//if (fileExists == true) {
 			//load the file
-		String fileName = "BudgetDatabase";
+		
 		
 		try{
-			File f = new File(fileName);
+			File f = new File(customerName);
 			if(f.exists() == false) {
 				f.createNewFile();
 				fileExists = true;
