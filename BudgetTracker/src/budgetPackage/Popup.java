@@ -1,6 +1,7 @@
 package budgetPackage;
 
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,13 +16,13 @@ public abstract class Popup extends JPanel{
 	private JFrame thisFrame;
 	GridBagConstraints gbc;
 	BudgetPercept percept;
-	
-	
+		
 	public abstract void setContents(); //main initialization
 	public abstract Dimension objectSize();
-	//public abstract void setWindowListener();
-	
-	public Popup() {
+		
+	public Popup(BudgetPercept p) {
+		this.percept = p;
+		this.setBorder(new EtchedBorder());
 		//Declare GridBagLayout, GridBagConstraints
 		this.setLayout(new GridBagLayout());  
 		this.gbc = new GridBagConstraints();
@@ -48,10 +49,34 @@ public abstract class Popup extends JPanel{
 		gbc.weighty = y;
 	}
 	
+	// x = display order in row -- horizontal
+	// y = display order in column -- vertical
+	// xx = column span
+	// yy = row span
 	protected void setLayout(Component c, int x, int y, int xx, int yy, int textsize) {
 		//This is used to add a component to the JPanel,
 		//while also declaring relevent gridbagconstraints
 		WeightXY(1,1);
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = xx;
+		gbc.gridheight = yy;
+		gbc.fill = GridBagConstraints.BOTH;
+		c.setFont(new Font("Ariel",Font.PLAIN, textsize));
+		this.add(c,gbc);
+	}
+	
+	// x = display order in row -- horizontal
+	// y = display order in column -- vertical
+	// xx = column span
+	// yy = row span
+	// wx = horizontal space
+	// wy = vertical space
+	// This setlayout gives access to the horizontal and vertical spacing weight factors of the grid
+	protected void setLayout(Component c, int x, int y, int xx, int yy, int wx, int wy, int textsize) {
+		//This is used to add a component to the JPanel,
+		//while also declaring relevent gridbagconstraints
+		WeightXY(wx,wy);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = xx;
@@ -76,4 +101,5 @@ public abstract class Popup extends JPanel{
 		//this is used to add system.exit to popup close
 		this.thisFrame.removeWindowListener(this.thisFrame.getWindowListeners()[0]);
 	}
+	
 }

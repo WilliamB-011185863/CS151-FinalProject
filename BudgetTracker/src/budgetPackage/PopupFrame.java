@@ -14,6 +14,7 @@ public class PopupFrame extends JFrame{
 	public PopupFrame(Dimension d, Popup P) {
 		this.setPreferredSize(d);
 		this.add(P);
+		this.setTitle(P.getName());
 		this.setBackground(Color.BLACK);
 		this.pack();
 		this.setVisible(true);
@@ -21,11 +22,7 @@ public class PopupFrame extends JFrame{
         this.addWindowListener(new WindowAdapter() {
         	public void windowClosing(WindowEvent e) {
         		System.exit(1);
-        		// Note: JFrame.EXIT_ON_CLOSE stops ALL threads.  
-                //When this function is phased out, alternate thread-terminating functions should be introduced
         	}
         });
 	}
-	
-	
 }

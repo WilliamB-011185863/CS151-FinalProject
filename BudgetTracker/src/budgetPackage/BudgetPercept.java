@@ -3,19 +3,23 @@ package budgetPackage;
 import java.util.ArrayList;
 
 public class BudgetPercept {
-	int debugmode = 0;
+	private int debugmode = 0;
 	protected Budget aBudget;
 	String username;
+	
+	public int getDebugMode () {return debugmode;}
+	public void setDebugMode(int debugMode) {debugmode = debugMode;}
 	
 	public BudgetPercept() {
 		//This is the initializing phase, the login will be created 
 		//(or another component in debug mode)
 		if (debugmode == 0) {
-			Popup login = new Login();
+			Popup login = new Login(this);
 			login.setPointer(this);
 		}
 		else if (debugmode == 1) {
-			Popup mainUI = new MainPanel();
+			Popup mainUI = new MainPanel(this);
+			mainUI.setPointer(this);
 		}
 	}
 	
@@ -24,14 +28,12 @@ public class BudgetPercept {
 		//Budget is instantiated, mainpanel is initialized
 		username = name;
 		aBudget = new Budget(name);
-		Popup mainUI = new MainPanel();
+		Popup mainUI = new MainPanel(this);
 		mainUI.setPointer(this);
 	}
 	
-	
-	
 	public void saveData() {
-		//Triggered by saveButton in mainPanel, records current data in file
+		aBudget.saveBudget();		
 	}
 	
 	public ArrayList<BudgetItem> fetchBudget(){
@@ -39,9 +41,7 @@ public class BudgetPercept {
 		return aBudget.BudgetList;
 	}
 	
-	public void itemAdding(double amount, String type, int posNeg) {
-		aBudget.newItem(type, amount, posNeg);
-		//toDo: refresh subpanel
+	public void itemAdding(double amount, String type) {
+		aBudget.newItem(type, amount);
 	}
-	
 }

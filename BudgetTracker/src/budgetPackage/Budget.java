@@ -1,46 +1,54 @@
 package budgetPackage;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Budget {
 	String customerName;
 	ArrayList<BudgetItem> BudgetList;
-	ArrayList<String> rawData;
 	BudgetFileInterface fInterface;
 	boolean fileExists;
-	Double budgetLimit;
+	private Double budgetLimit;
+	String fileName;
 
 	
 	public Budget(String nameInput) {
 		this.BudgetList = new ArrayList<BudgetItem>();
 		this.customerName = nameInput;
-		//this.fileExists = false; //fInterface.CheckFile(nameInput);
-		//if (fileExists == true) {
-			//load the file
+		this.fileName = customerName;
+		fInterface = new BudgetFileInterface();
+		fileExists = fInterface.CheckFile(this.fileName);
 		
-		
-		try{
-			File f = new File(customerName);
-			if(f.exists() == false) {
-				f.createNewFile();
-				fileExists = true;
-			}
+		if (!fileExists) {
+			fInterface.name = this.fileName;
+			fInterface.CreateFile();
+			fileExists = true;
 		}
-		catch(Exception e){
+		
+		try {
+			ArrayList<String> list =  fInterface.ReadFile(this.fileName);
+			BudgetList = 
+					BudgetListConverter.ConvertFile(list);			
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void finishingTouches() {
-		//setDefaultCloseOperation(Budget.finishingTouches())
-		//intended to save the current Budget after closing the window
-		//TODO
-		cleanUp();
+	public void saveBudget()
+	{
+		fInterface = new BudgetFileInterface();
+		ArrayList<String> data = 
+				BudgetListConverter.ConvertData(this.BudgetList);
+		try {
+			fInterface.name = this.fileName;
+			fInterface.RewriteFile(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void newItem(String setName, Double setValue, int posNeg) {
-		this.BudgetList.add(new BudgetItem(setName, setValue, posNeg));
+	public void newItem(String setName, Double setValue) {
+		this.BudgetList.add(new BudgetItem(setName, setValue));
 	}
 	
 	public int getListSize() {
@@ -48,10 +56,9 @@ public class Budget {
 	}
 	
 	public Double getValue(int id) {
-		//gets the value of id
 		id--;
 		try {
-			return BudgetList.get(id).getTrueValue();
+			return BudgetList.get(id).getItemValue();
 		}
 		catch (NullPointerException e) {
 			System.out.println("Error: getValue nullPoint, id = " + id);
@@ -60,17 +67,16 @@ public class Budget {
 	}
 	
 	public void setValue(int id, double newValue) {
-		//Sets the value of id to V
 		id--;
 		try {
 			BudgetList.get(id).setItemValue(newValue);
 			return;
 		}
 		catch (NullPointerException e) {
-			System.out.println("Error: setValue nullPoint, id = " + id + ", value to set = " + newValue);
+			System.out.println("Error: setValue nullPoint, id = " + id + 
+					", value to set = " + newValue);
 			return;
 		}
-		// TODO - add some update function when V = 0?
 	}
 	
 	public int removeByName(String toRemove) {
@@ -84,7 +90,6 @@ public class Budget {
 	}
 	
 	public void removeItem(int id) {
-		//Removes id from the list
 		id--;
 		try {
 			BudgetList.remove(id);
@@ -103,25 +108,22 @@ public class Budget {
 			return;
 		}
 		catch (NullPointerException e) {
-			System.out.println("Error: rename nullPoint, id = " + id + ", newName to set = " + newName);
+			System.out.println("Error: rename nullPoint, id = " + id + 
+					", newName to set = " + newName);
 			return;
 		}
 	}
-	
-	public void cleanUp() {
-		//Intended to prune away objects with no value
-		for (int i = 0; i < BudgetList.size(); i++) {
-			if (BudgetList.get(i).getItemValue() == 0){
-				BudgetList.remove(i);
-				i--;
-			}
-		}
+		
+	public double remainingBalance() {
+		double retVal = budgetLimit != null ? budgetLimit : 0.00;
+		
+		return retVal - Math.abs(totalDebt());
 	}
 	
 	public double totalValue() {
 		double tally = 0;
 		for (int i = 0; i < BudgetList.size(); i++) {
-			tally += BudgetList.get(i).getTrueValue();
+			tally += BudgetList.get(i).getItemValue();
 		}
 		return tally;
 	}
@@ -129,7 +131,7 @@ public class Budget {
 	public double totalAsset() {
 		double tally = 0;
 		for (int i = 0; i < BudgetList.size(); i++) {
-			if (BudgetList.get(i).assetDebt() == true) {
+			if (BudgetList.get(i).getItemValue() > 0) {
 				tally += BudgetList.get(i).getItemValue();
 			}
 		}
@@ -139,17 +141,59 @@ public class Budget {
 	public double totalDebt() {
 		double tally = 0;
 		for (int i = 0; i < BudgetList.size(); i++) {
-			if (BudgetList.get(i).assetDebt() == false) {
+			if (BudgetList.get(i).getItemValue() < 0) {
 				tally += BudgetList.get(i).getItemValue();
 			}
 		}
 		return tally;
 	}
 	
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		if (BudgetList.size() != 0) {
+			for (BudgetItem bi : BudgetList)
+			{
+				sb.append(bi.getItemName());
+				sb.append(" ");
+				sb.append(String.valueOf(bi.getItemValue()));
+				sb.append(System.getProperty("line.separator"));
+			}
+		}
+		return sb.toString();
+	}
+	
+	public String budgetTally()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("Total Income: ");
+		sb.append(String.valueOf(totalAsset()));
+		sb.append(System.getProperty("line.separator"));
+		sb.append("Total Expenses: ");
+		sb.append(String.valueOf(totalDebt()));
+		sb.append(System.getProperty("line.separator"));
+		sb.append("Sub-Total: ");
+		sb.append(String.valueOf(totalValue()));
+		
+		return sb.toString();
+	}
+	
 	public void debugCheck() {
 		for (int i = 0; i < BudgetList.size(); i++) {
-			System.out.print("Item " + (i + 1) + ": " + BudgetList.get(i).getItemName() + "," + BudgetList.get(i).getItemValue());
+			System.out.print("Item " + (i + 1) + ": " + BudgetList.get(i).getItemName() 
+					+ "," + BudgetList.get(i).getItemValue());
 			System.out.println();
 		}
 	}
+
+	public Double getBudgetLimit() {
+		
+		return budgetLimit != null ? budgetLimit : 0.00;
+	}
+
+	public void setBudgetLimit(Double budgetLimit) {
+		this.budgetLimit = budgetLimit;
+	}
+	
 }
